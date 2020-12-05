@@ -73,8 +73,8 @@ for root,dirs,files in tqdm(os.walk('.\genres', topdown='False')):
             feature_list.append(np.std(spectral_bandwidth_2))
             feature_list.append(np.mean(spectral_bandwidth_3))
             feature_list.append(np.std(spectral_bandwidth_3))
-            feature_list.append(np.mean(spectral_bandwidth_3))
-            feature_list.append(np.std(spectral_bandwidth_3))
+            feature_list.append(np.mean(spectral_bandwidth_4))
+            feature_list.append(np.std(spectral_bandwidth_4))
 
             spectral_contrast = librosa.feature.spectral_contrast(y, sr=sr, n_bands = 6, fmin = 200.0)
             feature_list.extend(np.mean(spectral_contrast, axis=1))
