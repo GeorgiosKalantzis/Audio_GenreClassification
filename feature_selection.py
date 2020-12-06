@@ -37,8 +37,41 @@ for i in range(len(corr_matrix.columns)):
             colname2 = corr_matrix.columns[j]
 
             corr_features.add(colname1)
-            
+
             corr_features.add(colname2)
 
 # Correlation result
 # corr_features = {'mfccs_2_mean', 'spectral_centroid_mean', 'spectral_rolloff_mean'}
+
+
+"""
+Statistical & Ranking Filter Methods.
+These methods rank the features based on certain criteria or metrics,
+then select the features with the highest ranking.
+"""
+"""
+Information gain is used to measure the dependence between features and labels and
+calculates the information gain between the i-th feature and the class labels.
+In information gain, a feature is relevant if it has a high information gain.
+Info gain cannot handle redundancy.
+"""
+
+from sklearn.feature_selection import mutual_info_classif
+from sklearn.feature_selection import SelectKBest
+
+importances = mutual_info_classif(X_train,y_train)
+feat_importances = pd.Series(importances, X_train.columns[0:len(X_train.columns)])
+feat_importances.plot(kind='barh', color='blue') #plot info gain of each features
+plt.show()
+
+# select the number of features you want to retain.
+select_k = 30 #whatever we want
+
+# create the SelectKBest with the mutual info(info gain) strategy.
+selection = SelectKBest(mutual_info_classif, k=select_k).fit(X_train, y_train)
+
+# display the retained features.
+features = X_train.columns[selection.get_support()]
+print(features)
+
+###*** We have to drop the other features(with less info gain from X_train,X_test) ***###
