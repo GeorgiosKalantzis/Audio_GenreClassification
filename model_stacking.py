@@ -13,11 +13,17 @@ from sklearn.metrics import accuracy_score
 
 #Reading the file
 train = pd.read_csv('df_features.csv')
+
+y = train.iloc[1:,0]
+x = train.iloc[1:,1:]
+
+   
+y_train = np.array(y_train)
 data_list = list(train.columns)
-genre_list = train.iloc[:, -1]
+
 #Encoding the labels
 encoder = LabelEncoder()
-y = encoder.fit_transform(genre_list)
+y = encoder.fit_transform(y)
 #Normalizing Data
 scaler = StandardScaler()
 x = scaler.fit_transform(np.array(train.iloc[:, :-1], dtype=float))
