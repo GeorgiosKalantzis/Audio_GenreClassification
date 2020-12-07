@@ -24,7 +24,7 @@ encoder = LabelEncoder()
 y = encoder.fit_transform(y)
 #Normalizing Data
 scaler = StandardScaler()
-x = scaler.fit_transform(np.array(train.iloc[:, :-1], dtype=float))
+x = scaler.fit_transform(np.array(train.iloc[1:, 1:], dtype=float))
 #Splitting the dataset in training and testing
 X_train, X_test, Y_train, Y_test = train_test_split(x, y, test_size=0.20, random_state=2020, stratify=y)
 
