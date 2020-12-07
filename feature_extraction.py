@@ -8,45 +8,45 @@ import os
 
 WAV_DIR = 'genres/'
 
-########********SPECTRAL BANDWIDTH(of order 2,3,4) AND SPECTRAL CONTRAST ADDED********########
-########********COVARIANCE MATRIX BETWEEN MFCCS ADDED********########
 
+# Column names of all the features that will be extracted(146 features)
 col_names = ['class', 'zcr_mean', 'zcr_std', 'rms_mean', 'rms_std', 'tempo', 'spectral_centroid_mean',
              'spectral_centroid_std', 'spectral_rolloff_mean', 'spectral_rolloff_std'] + \
-             'spectral_bandwidth_2_mean', 'spectral_bandwidth_2_std',
+            ['spectral_bandwidth_2_mean', 'spectral_bandwidth_2_std',
              'spectral_bandwidth_3_mean', 'spectral_bandwidth_3_std',
              'spectral_bandwidth_4_mean', 'spectral_bandwidth_4_std'] + \
             ['spectral_contrast_' + str(i+1) + '_mean' for i in range(7)] + \
             ['spectral_contrast_' + str(i+1) + '_std' for i in range(7)] + \
             ['mfccs_' + str(i+1) + '_mean' for i in range(13)] + \
             ['mfccs_' + str(i+1) + '_std' for i in range(13)] + \
-            ['chroma_stft_' + str(i+1) + '_mean' for i in range(12)] +\
-       ['chroma_stft_' + str(i+1) + '_std' for i in range(12)]+\
-       ['mfccs_Cov'+str(i+1) for i in range(78)]
+            ['chroma_stft_' + str(i+1) + '_mean' for i in range(12)] + \
+            ['chroma_stft_' + str(i+1) + '_std' for i in range(12)]+ \
+            ['mfccs_Cov'+str(i+1) for i in range(66)]
       
 
-
+# Init dataframe to hold the features
 df = pd.DataFrame(columns=col_names)
 
+# Parsing throught the file system to extract features from audio
 for root,dirs,files in tqdm(os.walk('.\genres', topdown='False')):
 
-
+        # Iterating through audio files
         for file in files:
 
             y, sr = librosa.load(os.path.join(root,file), sr=22050)
 
             feature_list = []
             filename = []
-
+            
+            # Extract the class name of the song
             for i in file:
               if i == '.':
                   break
-
-            filename.append(i)
+              filename.append(i)
 
             filename = ''.join(filename)
 
-
+            # Fill the list with the features
             feature_list.append(filename)
 
             zcr = librosa.feature.zero_crossing_rate(y + 0.0001, frame_length=2048, hop_length=512)[0]
@@ -76,33 +76,28 @@ for root,dirs,files in tqdm(os.walk('.\genres', topdown='False')):
             feature_list.append(np.std(spectral_bandwidth_2))
             feature_list.append(np.mean(spectral_bandwidth_3))
             feature_list.append(np.std(spectral_bandwidth_3))
-            feature_list.append(np.mean(spectral_bandwidth_3))
-            feature_list.append(np.std(spectral_bandwidth_3))
+            feature_list.append(np.mean(spectral_bandwidth_4))
+            feature_list.append(np.std(spectral_bandwidth_4))
 
             spectral_contrast = librosa.feature.spectral_contrast(y, sr=sr, n_bands = 6, fmin = 200.0)
             feature_list.extend(np.mean(spectral_contrast, axis=1))
             feature_list.extend(np.std(spectral_contrast, axis=1))
 
             mfccs = librosa.feature.mfcc(y, sr=sr, n_mfcc=13)
-            #COMPUTING THE MEAN AND STD FROM EACH MFCC INDIVIDUALLY
-            for e in mfccs:
-              feature_list.extend(np.mean(e, axis=1))
-            for e in mfccs:
-              feature_list.extend(np.mean(e,axis=1))
-            
-            #UNNECESSARY  
-            #feature_list.extend(np.mean(mfccs, axis=1))
-            #feature_list.extend(np.std(mfccs, axis=1))
+             
+            feature_list.extend(np.mean(mfccs, axis=1))
+            feature_list.extend(np.std(mfccs, axis=1))
 
             chroma_stft = librosa.feature.chroma_stft(y, sr=sr, hop_length=1024)
             feature_list.extend(np.mean(chroma_stft, axis=1))
             feature_list.extend(np.std(chroma_stft, axis=1))
             
             #Covariance
-            c=np.cov(mfcc)
+            c = np.cov(mfccs)
+            # Loop through the upper triangular matrix without the diagonal
             for i in range(1, 13):
-              for j in range(2, 14):
-                feature_list.extend(c[i-1, j-1])
+              for j in range(i+1, 13):
+                feature_list.append(c[i, j])
                 
             feature_list[1:] = np.round(feature_list[1:], decimals=3)
 
