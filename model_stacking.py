@@ -17,8 +17,6 @@ train = pd.read_csv('df_features.csv')
 y = train.iloc[1:,0]
 x = train.iloc[1:,1:]
 
-   
-y_train = np.array(y_train)
 data_list = list(train.columns)
 
 #Encoding the labels
