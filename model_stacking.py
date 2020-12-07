@@ -51,8 +51,10 @@ S_train, S_test= stacking(models, X_train, Y_train, X_test, regression=False, mo
 #random_state:random state for reproducibility
 #verbose:2 means to print all infos
 
-#Predicting with the 2nd Level Classifiers taking as inputs,the results from the other classifiers
+
+
+#Predicting with the 2nd Level Classifier,taking as inputs,the results from the other classifiers
 model=XGBClassifier(random_state=0, n_jobs=-1, learning_rate=0.1, n_estimators=100, max_depth=3)
 model=model.fit(S_train, Y_train)
 y_pred=model.predict(S_test)
-print('Final prediction score: [%.8f]'%accuracy_score(Y_test,y_pred))
+print('Prediction score: [%.8f]'%accuracy_score(Y_test,y_pred))
