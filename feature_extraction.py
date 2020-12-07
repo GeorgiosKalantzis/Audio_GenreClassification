@@ -9,6 +9,7 @@ import os
 WAV_DIR = 'genres/'
 
 ########********SPECTRAL BANDWIDTH(of order 2,3,4) AND SPECTRAL CONTRAST ADDED********########
+########********COVARIANCE MATRIX BETWEEN MFCCS ADDED********########
 
 col_names = ['class', 'zcr_mean', 'zcr_std', 'rms_mean', 'rms_std', 'tempo', 'spectral_centroid_mean',
              'spectral_centroid_std', 'spectral_rolloff_mean', 'spectral_rolloff_std'] + \
@@ -20,7 +21,9 @@ col_names = ['class', 'zcr_mean', 'zcr_std', 'rms_mean', 'rms_std', 'tempo', 'sp
             ['mfccs_' + str(i+1) + '_mean' for i in range(13)] + \
             ['mfccs_' + str(i+1) + '_std' for i in range(13)] + \
             ['chroma_stft_' + str(i+1) + '_mean' for i in range(12)] +\
-       ['chroma_stft_' + str(i+1) + '_std' for i in range(12)]
+       ['chroma_stft_' + str(i+1) + '_std' for i in range(12)]+\
+       ['mfccs_Cov'+str(i+1) for i in range(78)]
+      
 
 
 df = pd.DataFrame(columns=col_names)
@@ -81,16 +84,29 @@ for root,dirs,files in tqdm(os.walk('.\genres', topdown='False')):
             feature_list.extend(np.std(spectral_contrast, axis=1))
 
             mfccs = librosa.feature.mfcc(y, sr=sr, n_mfcc=13)
-            feature_list.extend(np.mean(mfccs, axis=1))
-            feature_list.extend(np.std(mfccs, axis=1))
+            #COMPUTING THE MEAN AND STD FROM EACH MFCC INDIVIDUALLY
+            for e in mfccs:
+              feature_list.extend(np.mean(e, axis=1))
+            for e in mfccs:
+              feature_list.extend(np.mean(e,axis=1))
+            
+            #UNNECESSARY  
+            #feature_list.extend(np.mean(mfccs, axis=1))
+            #feature_list.extend(np.std(mfccs, axis=1))
 
             chroma_stft = librosa.feature.chroma_stft(y, sr=sr, hop_length=1024)
             feature_list.extend(np.mean(chroma_stft, axis=1))
             feature_list.extend(np.std(chroma_stft, axis=1))
-
+            
+            #Covariance
+            c=np.cov(mfcc)
+            for i in range(1, 13):
+              for j in range(2, 14):
+                feature_list.extend(c[i-1, j-1])
+                
             feature_list[1:] = np.round(feature_list[1:], decimals=3)
 
-
+      
             df = df.append(pd.DataFrame(feature_list, index=col_names).transpose(), ignore_index=True)
 
 df.to_csv('df_features.csv', index=False)
