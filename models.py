@@ -98,6 +98,6 @@ models_accuracy['SVM'] = round(metrics.accuracy_score(y_test, y_pred),4)
 print(models_accuracy)
 
 
-# Results -> Random Forest : 67%, ANN : 76%, SVM: 74% 
+# Results -> Random Forest : 69%, ANN : 78%, SVM: 75% 
    
 

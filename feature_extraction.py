@@ -2,6 +2,7 @@
 import librosa, librosa.display,librosa.feature
 import pandas as pd
 import numpy as np
+import scipy
 
 from tqdm import tqdm
 import os
@@ -9,8 +10,10 @@ import os
 WAV_DIR = 'genres/'
 
 
-# Column names of all the features that will be extracted(146 features)
-col_names = ['class', 'zcr_mean', 'zcr_std', 'rms_mean', 'rms_std', 'tempo', 'spectral_centroid_mean',
+# Column names of all the features that will be extracted
+col_names = ['class','signal_mean','signal_std','signal_skew','signal_kurtosis','zcr_mean',
+             'zcr_std', 'rms_mean', 'rms_std','tempo','spectral_flatness_mean',
+             'spectral_flatness_std','spectral_centroid_mean',
              'spectral_centroid_std', 'spectral_rolloff_mean', 'spectral_rolloff_std'] + \
             ['spectral_bandwidth_2_mean', 'spectral_bandwidth_2_std',
              'spectral_bandwidth_3_mean', 'spectral_bandwidth_3_std',
@@ -48,7 +51,24 @@ for root,dirs,files in tqdm(os.walk('.\genres', topdown='False')):
 
             # Fill the list with the features
             feature_list.append(filename)
-
+            feature_list.append(np.mean(abs(y)))
+            feature_list.append(np.std(y))
+            feature_list.append(scipy.stats.skew(abs(y)))
+            feature_list.append(scipy.stats.kurtosis(y))
+            
+            """
+            freqs = np.fft.fftfreq(y.size)
+            
+            feature_list.append(np.mean(freqs))
+            feature_list.append(np.std(freqs))
+            feature_list.append(np.amax(freqs))
+            feature_list.append(np.amin(freqs))
+            feature_list.append(np.median(freqs))
+            feature_list.append(scipy.stats.skew(freqs))
+            feature_list.append(scipy.stats.kurtosis(freqs))
+            feature_list.append(np.quantile(freqs,0.25))
+            feature_list.append(np.quantile(freqs,0.75))
+            """
             zcr = librosa.feature.zero_crossing_rate(y + 0.0001, frame_length=2048, hop_length=512)[0]
 
             feature_list.append(np.mean(zcr))
@@ -60,6 +80,10 @@ for root,dirs,files in tqdm(os.walk('.\genres', topdown='False')):
 
             tempo = librosa.beat.tempo(y, sr=sr)
             feature_list.extend(tempo)
+            
+            flatness = librosa.feature.spectral_flatness(y=y)
+            feature_list.append(np.mean(flatness))
+            feature_list.append(np.std(flatness))
 
             spectral_centroids = librosa.feature.spectral_centroid(y+0.01, sr=sr)[0]
             feature_list.append(np.mean(spectral_centroids))
