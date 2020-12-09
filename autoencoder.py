@@ -36,15 +36,13 @@ input_layer = Input(shape =(X.shape[1], ))
   
 # Building the Encoder network
  
-encoded = Dense(145, activation ='tanh', 
-                activity_regularizer = regularizers.l1(10e-5))(input_layer) 
 encoded = Dense(120, activation ='tanh', 
-                activity_regularizer = regularizers.l1(10e-5))(encoded)
+                activity_regularizer = regularizers.l1(10e-5))(input_layer) 
 encoded = Dense(100, activation ='tanh', 
-                activity_regularizer = regularizers.l1(10e-5))(encoded)  
+                activity_regularizer = regularizers.l1(10e-5))(encoded)
+
 
 decoded = Dense(120, activation ='tanh')(encoded)
-
 
   
 # Building the Output Layer 
@@ -66,7 +64,7 @@ hidden_representation = Sequential()
 hidden_representation.add(autoencoder.layers[0]) 
 hidden_representation.add(autoencoder.layers[1]) 
 hidden_representation.add(autoencoder.layers[2]) 
-hidden_representation.add(autoencoder.layers[3]) 
+ 
 
 """
 
@@ -95,7 +93,7 @@ print(round(test_loss,4))
 
 """
 
-# Generate new dataset with 100 features instead of 145
+# Generate new dataset with less features
 encoded_X = hidden_representation.predict(X)
 
 # Splitting the encoded data for linear classification 
