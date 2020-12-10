@@ -79,4 +79,4 @@ print(classification_report(Y_test,final1))
 print(classification_report(Y_test,final2))
 print(classification_report(Y_test,pred))
 
-###########10% better result(almost 80# accuracy) at last instead of predicting with one classifier#########
+###########10% better result(80% accuracy) at last instead of predicting with one classifier#########
