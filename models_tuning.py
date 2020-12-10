@@ -10,11 +10,12 @@ from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score, classification_report
 
 
-train = pd.read_csv('df_features.csv')
-data_list = list(train.columns)
-genre_list = train.iloc[:, -1]
+train = pd.read_csv('df_features.csv',header=0)
+y=train.iloc[0:,0]
+x=train.iloc[0:,1:]
+
 encoder = LabelEncoder()
-y = encoder.fit_transform(genre_list)
+y = encoder.fit_transform(y)
 scaler = StandardScaler()
 
 x = scaler.fit_transform(np.array(train.iloc[:, :-1], dtype=float))
