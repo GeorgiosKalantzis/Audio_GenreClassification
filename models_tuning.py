@@ -61,5 +61,3 @@ print(model.best_params_)
 
 
 
-
-#------------------THE REST CLASSIFIERS DONT NEED TO BE TUNED------------------#
