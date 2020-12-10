@@ -1,15 +1,15 @@
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split,GridSearchCV,KFold
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.linear_model import LogisticRegression,LinearRegression
-from sklearn.svm import SVC, NuSVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
 from vecstack import stacking
 from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.naive_bayes import GaussianNB
+
 
 
 #####################------------A NEURAL NETWORK CAN BE USED FOR LEVEL 1 OR 2 CLASSIFIER------------#####################
