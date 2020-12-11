@@ -108,4 +108,4 @@ df_test=pd.concat([test_pred4,test_pred5],axis=1)
 model=RandomForestClassifier(max_depth=150,max_features='sqrt',min_samples_leaf=1,min_samples_split=2,n_estimators=300)
 model.fit(df,Y_train)
 print(model.score(df_test,Y_test))
-###########10% better result(80% accuracy) at last instead of predicting with one classifier#########
+
