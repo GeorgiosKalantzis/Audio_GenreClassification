@@ -13,8 +13,12 @@ from sklearn.metrics import confusion_matrix,plot_confusion_matrix
 
 #reading the dataset
 train = pd.read_csv('df_features.csv')
+
+y = train.iloc[1:,0]
+x = train.iloc[1:,1:]
+
 data_list = list(train.columns)
-genre_list = train.iloc[:, -1]
+
 
 encoder = LabelEncoder()
 y = encoder.fit_transform(genre_list)
