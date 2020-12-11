@@ -7,6 +7,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from vecstack import stacking
 from xgboost import XGBClassifier
+import scipy
 from sklearn.metrics import accuracy_score, classification_report
 
 
