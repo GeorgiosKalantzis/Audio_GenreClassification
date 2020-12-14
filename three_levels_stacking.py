@@ -1,13 +1,14 @@
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split,StratifiedKfold
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from vecstack import stacking
 from xgboost import XGBClassifier
 from sklearn.neighbors import KNeighborsClassifier
+from 
 
 
 
@@ -94,7 +95,7 @@ df_test=pd.concat([test_pred1, test_pred3, test_pred3],axis=1)
 
 #2nd level classifiers
 model4=knn
-test_pred4,train_pred4=Stacking(model=model4,train=df,test=df_test,y=Y_train,,n_fold=2)
+test_pred4,train_pred4=Stacking(model=model4,train=df,test=df_test,y=Y_train,n_fold=2)
 test_pred4=pd.DataFrame(test_pred4)
 train_pred4=pd.DataFrame(train_pred4)
 
