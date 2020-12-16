@@ -12,10 +12,12 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 #reading the files and initializing the train and test sets
 filename=glob('df_features*.csv')
 dataframes=[pd.read_csv(f) for f in filename]
-X_train=[[0 for i in range(21)] for j in range(700)]
-Y_train=[[0 for i in range(1)] for j in range(700)]
-X_test=[[0 for i in range(21)] for j in range(300)]
-Y_test=[[0 for i in range(1)] for j in range(300)]
+models=[0 for i in range(21)]
+predictions=np.array([[0 for x in range(300)]for y in range(len(models))])
+"""
+pca=[0 for i in range(21)]
+lda = [0 for i in range(21)]
+"""
 
 
 #creating 21 train and test sets for each model
@@ -27,43 +29,33 @@ for i in range(21):
     y=encoder.fit_transform(genre_list)
     scaler=StandardScaler()
     x=scaler.fit_transform(np.array(dataframes[i].iloc[0:,:-1],dtype=float))
-    X_train[i], X_test[i],Y_train[i],Y_test[i]=train_test_split(x, y ,test_size=.30,random_state=0,stratify=y)
+    X_train, X_test,Y_train,Y_test=train_test_split(x, y ,test_size=.30,random_state=0,stratify=y)
+    models[i] = SVC(C=94, gamma=0.005, kernel='rbf', probability=True, decision_function_shape='ovr')
+    """
+    LDA
+    
+    lda[i] = LDA()
+    X_train = lda[i].fit_transform(X_train, Y_train)
+    X_test = lda[i].transform(X_test)
+    
+    PCA
+    
+    pca[i] = PCA(0.95)
+    pca[i].fit(X_train)
+    X_train = pca[i].transform(X_train)
+    X_test = pca[i].transform(X_test)
+    """
+    #Fitting the models
+    models[i].fit(X_train,Y_train)
+    #Array to hold the predictions of models
+    predictions[i,:]=models[i].predict(X_test)
 
-models=[0 for i in range(21)]
 
-#creating the models
-
-
-for i in range(21):
-    models[i]=SVC(C=94,gamma=0.005,kernel='rbf',probability=True,decision_function_shape='ovr')
-    #pca[i]=PCA(0.95)
-
-
-final_prediction=[]
-# array to hold the predictions of models
-
-predictions=np.array([[0 for x in range(len(Y_test))]for y in range(len(models))])
 
 # array with the final predictions
 final_prediction=np.array([0 for x in range(len(Y_test))])
 
 
-#PCA 
-pca=[0 for i in range(21)]
-for i in range(21):
-    pca[i]=PCA(0.98)
-    pca[i].fit(X_train[i])
-    X_train[i]=pca[i].transform(X_train[i])
-    X_test[i]=pca[i].transform(X_test[i])
-
-"""
-
-lda = [0 for i in range(21)]
-for i in range(21):
-    lda[i] = LDA()
-    X_train[i] = lda[i].fit_transform(X_train[i], Y_train[i])
-    X_test[i] = lda[i].transform(X_test[i])
-"""
 
 # Training and Testing the models
 
