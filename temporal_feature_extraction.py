@@ -12,7 +12,7 @@ import csv
 ################-----------------TEMPORAL FEATURES THAT ARE BEING EXTRACTED-----------------##################
 ################ MEAN AND STD OF:ZCR,RMS,SPECTRAL CENTROID,SPECTRAL ROLLOFF,SPECTRAL BANDWIDTH2,MFCC,SPECTRAL CONTRAST ################
 ################ RSD,HCF,LCF OF:ZCR,RMS,SPECTRAL CENTROID,SPECTRAL ROLLOFF,SPECTRAL BANDWIDTH2 ##############
-########################-----------------FLATNESS FOR EVERY WINDOW-----------------################
+########################-----------------TEMPORAL FLATNESS FOR EVERY WINDOW-----------------################
 # Init dataframe to hold the features
 df1 = pd.DataFrame()
 df2 = pd.DataFrame()
@@ -166,7 +166,7 @@ for g in genres:
             feature_list[i][63] = np.mean(spectral_contrast[6, counter:counter2])
             feature_list[i][64] = np.std(spectral_contrast[6, counter:counter2])
 
-            #FLATNESS
+            #Temporal Flatness
 
             feature_list[i][65] = (gmean(zcr[counter:counter2])/np.mean(zcr[counter:counter2]))
             feature_list[i][66] = (gmean(rms[counter:counter2])/np.mean(rms[counter:counter2]))
