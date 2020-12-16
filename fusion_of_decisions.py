@@ -88,3 +88,5 @@ cm=confusion_matrix(Y_test[0],final_prediction,normalize='true')
 disp=ConfusionMatrixDisplay(confusion_matrix=cm,display_labels=labels)
 disp=disp.plot()
 plt.show()
+
+#Accuracy:With PCA:79%,Without PCA:82%
