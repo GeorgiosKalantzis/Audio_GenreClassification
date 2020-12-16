@@ -59,9 +59,6 @@ final_prediction=np.array([0 for x in range(len(Y_test))])
 
 # Training and Testing the models
 
-for i in range(21):
-    models[i].fit(X_train[i],Y_train[i])
-    predictions[i,:]=models[i].predict(X_test[i])
 
 for j in range(len(Y_test)):
         class_votes = np.array([0 for x in range(10)])
@@ -81,12 +78,12 @@ for j in range(len(Y_test)):
         final_prediction[j]=index_max
 
 
-print(classification_report(Y_test[0],final_prediction))
+print(classification_report(Y_test,final_prediction))
 
 #computing and plotting the confusion matrix
 
 labels=['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
-cm=confusion_matrix(Y_test[0],final_prediction,normalize='true')
+cm=confusion_matrix(Y_test,final_prediction,normalize='true')
 disp=ConfusionMatrixDisplay(confusion_matrix=cm,display_labels=labels)
 disp=disp.plot()
 plt.show()
