@@ -88,4 +88,4 @@ disp=ConfusionMatrixDisplay(confusion_matrix=cm,display_labels=labels)
 disp=disp.plot()
 plt.show()
 
-#Accuracy:With PCA:79%,Without PCA:82%
+#Accuracy:With PCA:79%,With LDA:78%,Without PCA and LDA:82%
