@@ -1,3 +1,11 @@
+
+"""
+Fusion of partial decisions from each window using SVM classifier at each window
+and combining these decisions via voting.
+
+"""
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
@@ -9,41 +17,58 @@ from sklearn.metrics import accuracy_score, classification_report,confusion_matr
 from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 
-#reading the files and initializing the train and test sets
-filename=glob('df_features*.csv')
-dataframes=[pd.read_csv(f) for f in filename]
-models=[0 for i in range(21)]
-predictions=np.array([[0 for x in range(300)]for y in range(len(models))])
+
+
+# Reading the files and initializing the train and test sets
+
+filename = glob('df_features*.csv') 
+
+dataframes = [pd.read_csv(f) for f in filename]
+
+models = [0 for i in range(21)]
+
+predictions = np.array([[0 for x in range(300)]for y in range(len(models))])
+
+# Optional feature transformation with pca/lda
 """
 pca=[0 for i in range(21)]
 lda = [0 for i in range(21)]
 """
 
 
-#creating 21 train and test sets for each model
+# Fitting in every window
 for i in range(21):
     
     data_list = list(dataframes[i].columns)
-    genre_list = dataframes[i].iloc[:,-1]
-    encoder = LabelEncoder()
-    y=encoder.fit_transform(genre_list)
-    scaler=StandardScaler()
-    x=scaler.fit_transform(np.array(dataframes[i].iloc[0:,:-1],dtype=float))
-    X_train, X_test,Y_train,Y_test=train_test_split(x, y ,test_size=.30,random_state=0,stratify=y)
-    models[i] = SVC(C=94, gamma=0.005, kernel='rbf', probability=True, decision_function_shape='ovr')
-    """
-    LDA
     
+    genre_list = dataframes[i].iloc[:,-1]
+    
+    encoder = LabelEncoder()
+    
+    y = encoder.fit_transform(genre_list)
+    
+    # Same scale at each window to model the temporal dependencies
+    scaler = StandardScaler()
+    
+    x = scaler.fit_transform(np.array(dataframes[i].iloc[0:,:-1],dtype=float))
+    
+    X_train, X_test,Y_train,Y_test=train_test_split(x, y ,test_size=.30,random_state=0,stratify=y)
+    
+    models[i] = SVC(C=94, gamma=0.005, kernel='rbf', probability=True, decision_function_shape='ovr')
+    
+    
+    # Optional feature transformation with pca/lda
+    """
+
     lda[i] = LDA()
     X_train = lda[i].fit_transform(X_train, Y_train)
     X_test = lda[i].transform(X_test)
-    
-    PCA
-    
+ 
     pca[i] = PCA(0.95)
     pca[i].fit(X_train)
     X_train = pca[i].transform(X_train)
     X_test = pca[i].transform(X_test)
+    
     """
     #Fitting the models
     models[i].fit(X_train,Y_train)
@@ -57,7 +82,7 @@ final_prediction=np.array([0 for x in range(len(Y_test))])
 
 
 
-# Training and Testing the models
+# Getting the votes
 
 
 for j in range(len(Y_test)):
